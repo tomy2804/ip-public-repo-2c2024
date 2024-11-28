@@ -1,0 +1,46 @@
+INFORME
+Este proyecto consiste en la modificación y finalización del código de una página web en la cual,
+mediante un banco de datos externo, vamos a identificar y clasificar los diversos personajes de la serie Rick and Morty.
+Con el fin de poder, tener en un mismo lugar, diversos datos de los personajes de la serie animada. 
+(explicar sobre los favs y buscador solo si se agregan)
+
+Dentro de las funciones necesarias que tuvimos que modificar se encuentran:
+La función home:
+def home(request):
+    page=request.GET.get('page', 1)
+    name=request.GET.get('name', None)
+    images=getAllImages(page , name)
+    favourite_list=getAllFavourites(request) if request.user.is_authenticated else []
+    return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list, 'page': int(page), 'name': name })
+Esta función se encarga de obtener los datos necesarios, procesarlos y los renderiza en el lugar correspondiente para que el
+usuario vea la información que desea en la página principal.
+(DIFICULTADES)
+
+Luego utilizamos la función getAllImages:
+def getAllImages(page=1, name=None):
+    api_url = f'{DEFAULT_REST_API_URL}{page}'
+    if name:
+        api_url+= f'{DEFAULT_NAME_QUERY_PARAM}{name}'
+    response = requests.get(api_url)
+    if response.status_code==200:
+        try:
+            json_collection = response.json()
+            results = json_collection.get('results', [])
+        except ValueError:
+            print("Error decoding JSON")
+            results = []
+    else:
+        print(f"Error fetching API: {response.status_code}")
+        results = []
+    images = [fromRequestIntoCard(raw_data) for raw_data in results]
+    print(f"Page {page}, Name {name}: {images}") 
+    return images
+Donde la función getAllImages se encarga de obtener imágenes de personajes de la API de Rick and Morty.
+Permite la asignación de página y la búsqueda de personajes por nombre. Realiza una solicitud a la API, maneja algunos posibles errores,
+transforma los datos recibidos en un formato adecuado para la presentación, y devuelve la lista de imágenes.
+(DIFICULTADES: como que tuvimos problemas para el buen armado de la url ya que no nos la tomaba)
+
+Por ultimo está la funcion home.html:
+Esta es la plantilla que permite al usuario realizar busquedas y visualizar la información sobre cada personaje
+de una forma visual y para poder gestionarlos.
+(DIFICULTADES: como que tuvimos problemas para el reborde de las cards)

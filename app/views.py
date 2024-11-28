@@ -7,8 +7,6 @@ from app.layers.services.services import getAllImages, getAllFavourites
 def index_page(request):
     return render(request, 'index.html')
 
-# esta función obtiene 2 listados que corresponden a las imágenes de la API y los favoritos del usuario, y los usa para dibujar el correspondiente template.
-# si el opcional de favoritos no está desarrollado, devuelve un listado vacío.
 def home(request):
     page=request.GET.get('page', 1)
     name=request.GET.get('name', None)
@@ -18,8 +16,6 @@ def home(request):
 
 def search(request):
     search_msg = request.POST.get('query', '')
-    # si el texto ingresado no es vacío, trae las imágenes y favoritos desde services.py,
-    # y luego renderiza el template (similar a home).
     if search_msg:
         images = getAllImages(name=search_msg)
         favourite_list = getAllFavourites(request) if request.user.is_authenticated else []
