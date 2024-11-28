@@ -3,16 +3,31 @@
 from ..persistence import repositories
 from ..utilities import translator
 from django.contrib.auth import get_user
+import requests
+from ..utilities.translator import fromRequestIntoCard
 
-def getAllImages(input=None):
-    # obtiene un listado de datos "crudos" desde la API, usando a transport.py.
-    json_collection = []
+DEFAULT_PAGE = '1'
+DEFAULT_REST_API_URL = 'https://rickandmortyapi.com/api/character?page='
+DEFAULT_NAME_QUERY_PARAM = '&name='
 
-    # recorre cada dato crudo de la colección anterior, lo convierte en una Card y lo agrega a images.
-    images = []
-
+def getAllImages(page=1, name=None):
+    api_url = f'{DEFAULT_REST_API_URL}{page}'
+    if name:
+        api_url+= f'{DEFAULT_NAME_QUERY_PARAM}{name}'
+    response = requests.get(api_url)
+    if response.status_code==200:
+        try:
+            json_collection = response.json()
+            results = json_collection.get('results', [])
+        except ValueError:
+            print("Error decoding JSON")
+            results = []
+    else:
+        print(f"Error fetching API: {response.status_code}")
+        results = []
+    images = [fromRequestIntoCard(raw_data) for raw_data in results]
+    print(f"Page {page}, Name {name}: {images}") 
     return images
-
 # añadir favoritos (usado desde el template 'home.html')
 def saveFavourite(request):
     fav = '' # transformamos un request del template en una Card.

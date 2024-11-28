@@ -1,9 +1,7 @@
-# capa de vista/presentación
-##comment
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from app.layers.services.services import getAllImages, getAllFavourites
 
 def index_page(request):
@@ -14,14 +12,12 @@ def index_page(request):
 def home(request):
     page=request.GET.get('page', 1)
     name=request.GET.get('name', None)
-    images= getAllImages(page, name)
+    images=getAllImages(page , name)
     favourite_list=getAllFavourites(request) if request.user.is_authenticated else []
-
     return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list, 'page': int(page), 'name': name })
 
 def search(request):
     search_msg = request.POST.get('query', '')
-
     # si el texto ingresado no es vacío, trae las imágenes y favoritos desde services.py,
     # y luego renderiza el template (similar a home).
     if search_msg:
@@ -34,7 +30,7 @@ def search(request):
 # Estas funciones se usan cuando el usuario está logueado en la aplicación.
 @login_required
 def getAllFavouritesByUser(request):
-    favourite_list = getAllFavourites(request)
+    favourite_list=getAllFavourites(request)
     return render(request, 'favourites.html', { 'favourite_list': favourite_list })
 
 @login_required
