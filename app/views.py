@@ -15,7 +15,7 @@ def home(request):
     return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list, 'page': int(page), 'name': name })
 
 def search(request):
-    search_msg = request.POST.get('query', '')
+    search_msg = request.POST.get('name', '')
     if search_msg:
         images = getAllImages(name=search_msg)
         favourite_list = getAllFavourites(request) if request.user.is_authenticated else []

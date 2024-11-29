@@ -43,4 +43,13 @@ transforma los datos recibidos en un formato adecuado para la presentación, y d
 Por ultimo está la funcion home.html:
 Esta es la plantilla que permite al usuario realizar busquedas y visualizar la información sobre cada personaje
 de una forma visual y para poder gestionarlos.
+ <div class="card mb-3 ms-5" style="max-width: 540px; border: 3px solid {% if img.status == 'Alive' %} green {% elif img.status == 'Dead' %} red {% else %} orange {% endif %};">
+ Acá agregamos los bordes de las cards segun el estado del personaje.
+ <strong>
+                                    {% if img.status == 'Alive' %} 🟢 {{ img.status }} 
+                                    {% elif img.status == 'Dead' %} 🔴 {{ img.status }} 
+                                    {% else %} 🟠 {{ img.status }} 
+                                    {% endif %}
+                                </strong>
+Y acá le dimos el estado, asignado a cada color, del personaje.
 (DIFICULTADES: como que tuvimos problemas para el reborde de las cards)
